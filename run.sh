@@ -15,7 +15,7 @@ mkdir -p output
 
 # 3. Install required libraries into the container
 echo "Installing dependencies..."
-pip install --quiet earthaccess geopandas rioxarray rasterio geocube dask distributed
+pip install --quiet earthaccess geopandas rioxarray rasterio geocube dask distributed pyarrow fastparquet
 
 # 4. Run the Python Pipeline using the explicit path to the script
 echo "Executing Python Pipeline..."
