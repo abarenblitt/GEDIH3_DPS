@@ -13,3 +13,10 @@ queue: maap-dps-worker-32gb
 # Define Inputs (Optional: You could pass DATE_START and DATE_END here to make the script dynamic)
 inputs:
   config: []
+  positional:
+    - name: edl_username
+      type: string
+      required: true
+    - name: edl_password
+      type: string
+      required: true
