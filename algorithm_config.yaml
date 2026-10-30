@@ -1,7 +1,7 @@
 algorithm_name: gedi_rh98_conus_2km
 algorithm_version: main
 algorithm_description: "Downloads GEDI L2A data, extracts RH98 over CONUS, builds H3 database, and rasterizes to 2km GeoTIFF."
-repository_url: https://github.com/abarenblitt/gedih3_DPS.git
+repository_url: https://github.com/abarenblitt/GEDIH3_DPS.git
 docker_container_url: continuumio/miniconda3:latest
 
 build_command: echo "Skipping build step, packages installed at runtime."
