@@ -5,22 +5,20 @@
 
 echo "Starting GEDI Pipeline Setup..."
 
-# 1. DPS runs in a specific workspace. Ensure we are in the right directory.
-cd $PWD
+# 1. Find exactly where this run.sh script lives (the algorithm folder)
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+echo "Algorithm code is located at: ${SCRIPT_DIR}"
 
-# 2. Create the standard MAAP output directory
-# MAAP automatically preserves EVERYTHING in this folder when the job finishes.
+# 2. We stay in the job's scratch directory ($PWD) to create the output folder
+echo "Job working directory is: $PWD"
 mkdir -p output
 
 # 3. Install required libraries into the container
-# (Assuming the base container is a standard python/conda environment)
 echo "Installing dependencies..."
 pip install --quiet earthaccess geopandas rioxarray rasterio geocube dask distributed
-# Make sure gedih3 is installed from its specific source if it's not in standard pip
-# pip install git+https://github.com/tiagodc/GEDI-H3.git (if needed)
 
-# 4. Run the Python Pipeline
+# 4. Run the Python Pipeline using the explicit path to the script
 echo "Executing Python Pipeline..."
-python gedi_pipeline.py
+python "${SCRIPT_DIR}/gedi_pipeline.py"
 
-echo "Job Complete! Check the output/ directory for results."
+echo "Job Complete!"
