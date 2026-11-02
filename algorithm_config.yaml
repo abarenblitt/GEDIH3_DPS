@@ -1,9 +1,16 @@
-algorithm_description: "Dynamic GEDI Pipeline: Downloads L2A, extracts RH98 for any BBox/Date, rasterizes to 2km."
-algorithm_name: "gedi_rh98_dynamic_2km"
-algorithm_version: "1.1.0"
-build_command: "chmod +x run.sh"
-run_command: "./run.sh"
-disk_space: "50GB" 
+algorithm_name: gedi_rh98_conus_2km
+algorithm_version: main
+algorithm_description: "Downloads GEDI L2A data, extracts RH98 over CONUS, builds H3 database, and rasterizes to 2km GeoTIFF."
+repository_url: https://github.com/abarenblitt/GEDIH3_DPS.git
+docker_container_url: continuumio/miniconda3:latest
+
+build_command: echo "Skipping build step, packages installed at runtime."
+
+run_command: bash GEDIH3_DPS/run.sh
+
+disk_space: 20GB
+queue: maap-dps-worker-32gb
+# Define Inputs (Optional: You could pass DATE_START and DATE_END here to make the script dynamic)
 inputs:
   config: []
   positional:
