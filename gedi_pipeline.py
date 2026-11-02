@@ -75,7 +75,8 @@ def main():
         print(f"Divided into {len(batches)} batches of ~{BATCH_SIZE} files.")
 
         print(f"\nStarting Dask processing cluster with {DASK_WORKERS} workers...")
-        with Client(n_workers=DASK_WORKERS, threads_per_worker=2, memory_limit='auto') as client:
+        # --> ADDED local_directory HERE <--
+        with Client(n_workers=DASK_WORKERS, threads_per_worker=2, memory_limit='auto', local_directory=str(BASE_DIR)) as client:
             
             for batch_idx, batch in enumerate(batches):
                 print(f"\n=== Processing Batch {batch_idx + 1} of {len(batches)} ===")
@@ -132,8 +133,8 @@ def main():
         parquet_files = [str(p) for p in H3_DIR.rglob("*.parquet")]
 
         if len(parquet_files) > 0:
-            with Client(n_workers=DASK_WORKERS, threads_per_worker=2, memory_limit='auto') as client:
-                ddf = dd.read_parquet(parquet_files)
+            # --> ADDED local_directory HERE <--
+            with Client(n_workers=DASK_WORKERS, threads_per_worker=2, memory_limit='auto', local_directory=str(BASE_DIR)) as client:
                 
                 rh_cols = [c for c in ddf.columns if 'rh' in c and '098' in c]
                 target_col = rh_cols[0] if rh_cols else [c for c in ddf.columns if 'rh' in c][0]
