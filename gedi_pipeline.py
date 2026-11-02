@@ -75,7 +75,6 @@ def main():
         print(f"Divided into {len(batches)} batches of ~{BATCH_SIZE} files.")
 
         print(f"\nStarting Dask processing cluster with {DASK_WORKERS} workers...")
-        # --> ADDED local_directory HERE <--
         with Client(n_workers=DASK_WORKERS, threads_per_worker=2, memory_limit='auto', local_directory=str(BASE_DIR)) as client:
             
             for batch_idx, batch in enumerate(batches):
@@ -133,8 +132,11 @@ def main():
         parquet_files = [str(p) for p in H3_DIR.rglob("*.parquet")]
 
         if len(parquet_files) > 0:
-            # --> ADDED local_directory HERE <--
             with Client(n_workers=DASK_WORKERS, threads_per_worker=2, memory_limit='auto', local_directory=str(BASE_DIR)) as client:
+                
+                # ---> CRITICAL LINE RESTORED HERE <---
+                print("Loading files directly into Dask...")
+                ddf = dd.read_parquet(parquet_files)
                 
                 rh_cols = [c for c in ddf.columns if 'rh' in c and '098' in c]
                 target_col = rh_cols[0] if rh_cols else [c for c in ddf.columns if 'rh' in c][0]
@@ -177,20 +179,5 @@ def main():
     else:
         print("No granules found for those dates.")
 
-    # =============================================================================
-    # 5. Manual Bucket Copy (Fallback)
-    # =============================================================================
-    # Note: If your DPS system automatically pushes the 'output/' folder to your 
-    # bucket, this section can be deleted. It is included here as a fallback.
-    BUCKET_PATH = "/projects/my-public-bucket"  
-    source_tif = OUTPUT_DIR / "rh98_conus_2km_final.tif"
-    bucket_dir = Path(BUCKET_PATH) / "gedi_outputs"
-    
-    if Path(BUCKET_PATH).exists() and source_tif.exists():
-        bucket_dir.mkdir(parents=True, exist_ok=True)
-        print(f"Copying files to {bucket_dir}...")
-        shutil.copy2(source_tif, bucket_dir / source_tif.name)
-        print(f"✅ Copied to public bucket.")
-        
 if __name__ == "__main__":
     main()
